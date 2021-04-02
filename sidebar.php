@@ -11,7 +11,7 @@ $bestsellery = $ksiazki->pobierzBestsellery();
             <tr>
                 <td>
                     <a href="ksiazki.szczegoly.php?id=<?= $bs['id'] ?>" title="szczegóły">
-                    <?php if (!empty($ks['zdjecie'])) : ?>
+                    <?php if (!empty($bs['zdjecie'])) : ?>
                         <img src="zdjecia/<?= $bs['zdjecie'] ?>" alt="<?= $bs['tytul'] ?>" class="img-thumbnail" />
                     <?php else : ?>
                         brak zdjęcia

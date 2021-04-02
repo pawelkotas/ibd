@@ -45,15 +45,14 @@ class Ksiazki
 	 * Pobiera najlepiej sprzedające się książki.
 	 * 
 	 */
-	public function pobierzBestsellery() :?array
+	public function pobierzBestsellery()
 	{
-		$sql = "SELECT * FROM ksiazki 
-                JOIN autorzy ON ksiazki.id_autora = autorzy.id
+		$sql = "SELECT k.*, a.imie, a.nazwisko FROM ksiazki k
+                JOIN autorzy a ON k.id_autora = a.id
                 ORDER BY RAND() LIMIT 5";
 
 		return $this->db->pobierzWszystko($sql);
 
-		// uzupełnić funkcję
 	}
 
 }

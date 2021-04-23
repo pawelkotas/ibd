@@ -82,8 +82,8 @@ $lista = $ksiazki->pobierzStrone($select, $zapytanie['parametry']);
                     <?php endif; ?>
                 </td>
                 <td><?= $ks['tytul'] ?></td>
-                <td><?= $ks['id_autora'] ?></td>
-                <td><?= $ks['id_kategorii'] ?></td>
+                <td><?= $ks['imie'], ' ', $ks['nazwisko'] ?></td>
+                <td><?= $ks['nazwa'] ?></td>
                 <td><?= $ks['cena'] ?></td>
                 <td>
                     <a href="#" title="dodaj do koszyka"><i class="fas fa-cart-plus"></i></a>

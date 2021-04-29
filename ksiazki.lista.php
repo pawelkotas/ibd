@@ -18,6 +18,7 @@ $stronicowanie = new Stronicowanie($_GET, $zapytanie['parametry']);
 $linki = $stronicowanie->pobierzLinki($zapytanie['sql'], 'ksiazki.lista.php');
 $select = $stronicowanie->dodajLimit($zapytanie['sql']);
 $lista = $ksiazki->pobierzStrone($select, $zapytanie['parametry']);
+$podsumowanie = $stronicowanie->pobierzPodsumowanieStrony($zapytanie['sql'])
 ?>
 
     <h1>Książki</h1>
@@ -54,6 +55,14 @@ $lista = $ksiazki->pobierzStrone($select, $zapytanie['parametry']);
             <option value="k.cena DESC"
                 <?= ($_GET['sortowanie'] ?? '') == 'k.cena DESC' ? 'selected' : '' ?>
             >cenie malejąco
+            </option>
+            <option value="a.nazwisko ASC"
+                <?= ($_GET['sortowanie'] ?? '') == 'a.nazwisko ASC' ? 'selected' : '' ?>
+            >nazwisku rosnąco
+            </option>
+            <option value="a.nazwisko DESC"
+                <?= ($_GET['sortowanie'] ?? '') == 'a.nazwisko DESC' ? 'selected' : '' ?>
+            >nazwisku malejąco
             </option>
         </select>
 
@@ -94,6 +103,9 @@ $lista = $ksiazki->pobierzStrone($select, $zapytanie['parametry']);
         <?php endforeach; ?>
         </tbody>
     </table>
+    <nav class="text-center">
+        <?= $podsumowanie ?>
+    </nav>
 
     <nav class="text-center">
         <?= $linki ?>

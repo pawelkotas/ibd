@@ -40,6 +40,17 @@ class Db
                 $stmt->bindParam($k, $v);
         }
 
+        //if(!$stmt->execute()){
+        //   var_dump($stmt->errorInfo());
+        //    var_dump($sql);
+        //    var_dump($params);
+        //    debug_print_backtrace();
+
+        //}
+
+        //var_dump($sql);
+        //var_dump($params);
+
         return $stmt->execute() ? $stmt->fetchAll(\PDO::FETCH_ASSOC) : null;
     }
 

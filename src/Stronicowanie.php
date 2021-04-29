@@ -71,10 +71,21 @@ class Stronicowanie
     public function pobierzLinki(string $select, string $plik): string
     {
         $rekordow = $this->db->policzRekordy($select, $this->parametryZapytania);
-        $liczbaStron = ceil($rekordow / $this->naStronie);
+        $liczbaStron = (int)ceil($rekordow / $this->naStronie);
         $parametry = $this->_przetworzParametry();
 
         $linki = "<nav><ul class='pagination'>";
+        $linki .= sprintf("<li class='page-item %s'><a href='%s?%s&strona=0' class='page-link'>Początek</a></li>",
+        $this -> strona === 0 ? 'disabled' : '',
+        $plik, $parametry
+        );
+        $linki .= sprintf("<li class='page-item %s'><a href='%s?%s&strona=%s' class='page-link' aria-label='Previous'>
+                           <span aria-hidden='true'>&laquo;</span>
+                            <span class='sr-only'>Poprzednia</span></a></li>",
+            $this -> strona === 0 ? 'disabled' : '',
+            $plik, $parametry,
+            $this -> strona - 1
+        );
         for ($i = 0; $i < $liczbaStron; $i++) {
             if ($i == $this->strona) {
                 $linki .= sprintf("<li class='page-item active'><a class='page-link'>%d</a></li>", $i + 1);
@@ -88,9 +99,30 @@ class Stronicowanie
                 );
             }
         }
+        $linki .= sprintf("<li class='page-item %s'><a href='%s?%s&strona=%s' class='page-link' aria-label='Next'>
+                                   <span aria-hidden='false'>&raquo;</span> 
+                                   <span class='sr-only'>Następna<span></span></a></li>",
+            $this -> strona === $liczbaStron - 1 ? 'disabled' : '',
+            $plik, $parametry,
+            $this -> strona + 1
+        );
+        $linki .= sprintf("<li class='page-item %s'><a href='%s?%s&strona=%s' class='page-link'>Koniec</a></li>",
+            $this -> strona === $liczbaStron - 1 ? 'disabled' : '',
+            $plik, $parametry,
+            $liczbaStron - 1,
+        );
         $linki .= "</ul></nav>";
 
         return $linki;
+    }
+
+    public function pobierzPodsumowanieStrony(string $select): string{
+        $liczbaRekordow = $this->db->policzRekordy($select, $this->parametryZapytania);
+        $poczatek = ($this->strona * $this->naStronie) + 1;
+        $koniec = $poczatek + $this->naStronie - 1;
+        $podsumowanie = sprintf("Wyświetlono rekordy %s-%s z %s",
+            $poczatek, min($koniec, $liczbaRekordow),$liczbaRekordow);
+        return $podsumowanie;
     }
 
     /**

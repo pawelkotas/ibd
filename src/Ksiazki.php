@@ -49,7 +49,7 @@ class Ksiazki
 	{
 		$sql = "SELECT k.*, a.imie, a.nazwisko FROM ksiazki k
                 JOIN autorzy a ON k.id_autora = a.id
-                ORDER BY RAND() LIMIT 5";
+                ORDER BY RAND() LIMIT 5 ";
 
 		return $this->db->pobierzWszystko($sql);
 
@@ -67,15 +67,13 @@ class Ksiazki
         $sql = "SELECT k.*, a.imie, a.nazwisko, kat.nazwa FROM ksiazki k 
                 JOIN autorzy a ON k.id_autora=a.id
                 JOIN kategorie kat ON k.id_kategorii=kat.id
-                WHERE 1=1";
+                WHERE 1=1 ";
 
         // dodawanie warunków do zapytanie
         if (!empty($params['fraza'])) {
             $sql .= "AND (k.tytul LIKE :fraza OR
-                            k.opis LIKE :fraza OR
-                            a.imie LIKE: fraza OR
-                            a.nazwisko LIKE: fraza OR)
-                            ";
+                          k.opis LIKE :fraza OR
+                          CONCAT(a.imie, ' ', a.nazwisko) LIKE :fraza) ";
             $parametry['fraza'] = "%$params[fraza]%";
         }
         if (!empty($params['id_kategorii'])) {
@@ -85,7 +83,7 @@ class Ksiazki
 
         // dodawanie sortowania
         if (!empty($params['sortowanie'])) {
-            $kolumny = ['k.tytul', 'k.cena'];
+            $kolumny = ['k.tytul', 'k.cena', 'a.nazwisko'];
             $kierunki = ['ASC', 'DESC'];
             [$kolumna, $kierunek] = explode(' ', $params['sortowanie']);
 

@@ -1,13 +1,23 @@
 <?php
+session_start();
 ini_set('display_errors', 1);
 error_reporting(E_ALL | E_STRICT);
+
 
 define('ROK_AKADEMICKI', (date('Y') - 1) . '/' . date('Y'));
 
 require_once 'vendor/autoload.php';
 
 use Ibd\Menu;
+use Ibd\Koszyk;
+$koszyk = new Koszyk();
 
+$ksiazkiWKoszyku = $koszyk->pobierzWszystkie();
+$liczbaKsiazekWKoszyku = 0;
+foreach ($ksiazkiWKoszyku as $ks){
+    $liczbaKsiazekWKoszyku += $ks['liczba_sztuk'];
+}
+$koszykHtml = "<span class='badge badge-dark' id='wKoszyku'>$liczbaKsiazekWKoszyku</span>";
 ?>
 
 <!DOCTYPE html>
@@ -37,6 +47,7 @@ use Ibd\Menu;
                 <ul class="navbar-nav mt-2 mt-lg-0">
 					<?= Menu::generujOpcje('index.php', 'Strona główna') ?>
                     <?= Menu::generujOpcje('ksiazki.lista.php', 'Książki') ?>
+                    <?= Menu::generujOpcje('koszyk.lista.php', "Koszyk $koszykHtml") ?>
                 </ul>
             </div>
         </nav>

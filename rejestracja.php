@@ -1,6 +1,6 @@
 <?php
 require_once 'vendor/autoload.php';
-session_start();
+//session_start();
 
 use Ibd\Uzytkownicy;
 use Valitron\Validator;
@@ -8,8 +8,20 @@ use Valitron\Validator;
 $uzytkownicy = new Uzytkownicy();
 $v = new Validator($_POST);
 
+$v->addInstanceRule('uniqueEmail', function($name, $email) use($uzytkownicy){
+    return !$uzytkownicy->mailWBazie($email);
+    }, 'znajduje się już w bazie użytkowników');
+
+$v->addInstanceRule('uniqueLogin', function($name, $login) use($uzytkownicy){
+    return !$uzytkownicy->loginWBazie($login);
+    }, 'znajduje się już w bazie użytkowników');
+
 if (isset($_POST['zapisz'])) {
     $v->rule('required', ['imie', 'nazwisko', 'adres', 'email', 'login', 'haslo']);
+    $v->rule('uniqueEmail', ['email']);
+    $v->rule('uniqueLogin', ['login']);
+    $v->rule('email', 'email');
+
 
     if ($v->validate()) {
         // brak błędów, można dodać użytkownika

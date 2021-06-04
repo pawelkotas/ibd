@@ -32,7 +32,7 @@ class Uzytkownicy
             'telefon' => $dane['telefon'],
             'email' => $dane['email'],
             'login' => $dane['login'],
-            'haslo' => md5($dane['haslo']),
+            'haslo' => password_hash($dane['haslo'], PASSWORD_BCRYPT),
             'grupa' => $grupa
         ]);
     }
@@ -47,12 +47,13 @@ class Uzytkownicy
      */
     public function zaloguj(string $login, string $haslo, string $grupa): bool
     {
-        $haslo = md5($haslo);
+        //$haslo = md5($haslo);
         $dane = $this->db->pobierzWszystko(
-            "SELECT * FROM uzytkownicy WHERE login = :login AND haslo = '$haslo' AND grupa = '$grupa'", ['login' => $login]
+            "SELECT * FROM uzytkownicy 
+                 WHERE login = :login AND grupa = '$grupa'", ['login' => $login]
         );
 
-        if ($dane) {
+        if (password_verify($haslo, $dane[0]['haslo'])) {
             $_SESSION['id_uzytkownika'] = $dane[0]['id'];
             $_SESSION['grupa'] = $dane[0]['grupa'];
             $_SESSION['login'] = $dane[0]['login'];
@@ -61,6 +62,22 @@ class Uzytkownicy
         }
 
         return false;
+    }
+
+    public function mailWBazie(string $email){
+        $sql = $this ->db->pobierzWszystko(
+            "SELECT * FROM uzytkownicy
+                 WHERE email = :email",
+                 ['email' => $email]);
+        return !empty($sql);
+    }
+
+    public function loginWBazie(string $login){
+        $sql = $this ->db->pobierzWszystko(
+            "SELECT * FROM uzytkownicy
+                 WHERE login = :login",
+            ['login' => $login]);
+        return !empty($sql);
     }
 
 }

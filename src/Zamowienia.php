@@ -49,12 +49,13 @@ class Zamowienia
     }
 
     public function pobierzZamowienia(): array{
-        $sql = "SELECT zam.*, status.nazwa, uz.imie, uz.nazwisko,
-            ROUND(SUM(szczegoly.cena * szczegoly.liczba_sztuk),2) as suma, SUM(szczegoly.liczba_sztuk) as liczba_ksiazek
+        $sql = "SELECT zam.*, st.nazwa as status,
+            ROUND(SUM(sz.cena * sz.liczba_sztuk),2) as suma, 
+            SUM(sz.liczba_sztuk) as liczba_ksiazek
             FROM zamowienia zam
-            JOIN zamowienia_statusy status on zam.id_statusu = status.id
-            JOIN uzytkownicy uz on zam.id_uzytkownika = uz.id
-            JOIN zamowienia_szczegoly szczegoly on zam.id = szczegoly.id_zamowienia
+            LEFT JOIN zamowienia_statusy st ON zam.id_statusu = st.id
+            LEFT JOIN zamowienia_szczegoly sz ON zam.id = sz.id_zamowienia 
+            LEFT JOIN uzytkownicy uz ON zam.id_uzytkownika = uz.id
             WHERE zam.id_uzytkownika = :id_uzytkownika
             GROUP BY zam.id";
 
